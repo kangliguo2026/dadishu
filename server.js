@@ -13,7 +13,21 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const HOST = '0.0.0.0';
 
-// JWT 密钥：优先读环境变量，否则用随机值（重启后旧 token 失效）
+// 加载 .env 配置文件（若存在；JWT_SECRET 等敏感配置不放代码仓库）
+try {
+  const fs = require('fs');
+  const envPath = path.join(__dirname, '.env');
+  if (fs.existsSync(envPath)) {
+    for (const line of fs.readFileSync(envPath, 'utf8').split('\n')) {
+      const m = line.match(/^\s*([\w.]+)\s*=\s*(.*)\s*$/);
+      if (m && !process.env[m[1]]) {
+        process.env[m[1]] = m[2].replace(/^["']|["']$/g, '');
+      }
+    }
+  }
+} catch (e) { /* 忽略 .env 解析错误 */ }
+
+// JWT 密钥：优先读环境变量/.env，否则用随机值（重启后旧 token 失效）
 const JWT_SECRET =
   process.env.JWT_SECRET || crypto.randomBytes(32).toString('hex');
 
