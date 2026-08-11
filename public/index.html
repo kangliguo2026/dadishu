@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打地鼠 - 登录 / 注册</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐹</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="auth-page">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="34" cy="46" r="13" fill="#8a5a35"/>
+        <circle cx="86" cy="46" r="13" fill="#8a5a35"/>
+        <circle cx="34" cy="46" r="6.5" fill="#f0b8a0"/>
+        <circle cx="86" cy="46" r="6.5" fill="#f0b8a0"/>
+        <path d="M20 120 Q18 78 38 62 Q48 30 60 30 Q72 30 82 62 Q102 78 100 120 Z" fill="#a06a44"/>
+        <ellipse cx="60" cy="104" rx="34" ry="20" fill="#d9a06b"/>
+        <ellipse cx="46" cy="56" rx="7" ry="8.5" fill="#2d1b0e"/>
+        <ellipse cx="74" cy="56" rx="7" ry="8.5" fill="#2d1b0e"/>
+        <circle cx="48" cy="52" r="2.6" fill="#fff"/>
+        <circle cx="76" cy="52" r="2.6" fill="#fff"/>
+        <ellipse cx="60" cy="68" rx="8.5" ry="6" fill="#f28c8c"/>
+        <rect x="54" y="74" width="5.5" height="6.5" rx="1.2" fill="#fff" stroke="#d9d9d9" stroke-width="0.8"/>
+        <rect x="60.5" y="74" width="5.5" height="6.5" rx="1.2" fill="#fff" stroke="#d9d9d9" stroke-width="0.8"/>
+        <path d="M30 66 L10 60 M30 72 L8 72" stroke="#7a5a3a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M90 66 L110 60 M90 72 L112 72" stroke="#7a5a3a" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <h1 class="auth-title">打地鼠</h1>
+    <p class="auth-sub">注册登录，冲击排行榜！</p>
+
+    <div class="tabs">
+      <div class="tab active" data-tab="login">登录</div>
+      <div class="tab" data-tab="register">注册</div>
+    </div>
+
+    <div class="auth-msg" id="authMsg"></div>
+
+    <!-- 登录表单 -->
+    <form id="loginForm" class="form" style="display:none;">
+      <div class="form-group">
+        <label for="loginName">用户名</label>
+        <input class="input" id="loginName" type="text" placeholder="请输入用户名" maxlength="20" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="loginPass">密码</label>
+        <input class="input" id="loginPass" type="password" placeholder="请输入密码" maxlength="64" autocomplete="current-password">
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%; margin-top:6px;">登 录</button>
+      <div class="auth-footer">还没有账号？<a data-switch="register">立即注册</a></div>
+    </form>
+
+    <!-- 注册表单 -->
+    <form id="registerForm" class="form">
+      <div class="form-group">
+        <label for="regName">用户名（2-20 位，中英文/数字/下划线）</label>
+        <input class="input" id="regName" type="text" placeholder="给自己取个名字" maxlength="20" autocomplete="username">
+      </div>
+      <div class="form-group">
+        <label for="regPass">密码（至少 6 位）</label>
+        <input class="input" id="regPass" type="password" placeholder="设置登录密码" maxlength="64" autocomplete="new-password">
+      </div>
+      <div class="form-group">
+        <label for="regPass2">确认密码</label>
+        <input class="input" id="regPass2" type="password" placeholder="再输入一次密码" maxlength="64" autocomplete="new-password">
+      </div>
+      <button class="btn btn-primary" type="submit" style="width:100%; margin-top:6px;">注 册</button>
+      <div class="auth-footer">已有账号？<a data-switch="login">去登录</a></div>
+    </form>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    const msg = document.getElementById('authMsg');
+    const tabs = document.querySelectorAll('.tab');
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+
+    function showMsg(text, type) {
+      msg.textContent = text || '';
+      msg.className = 'auth-msg' + (type ? ' ' + type : '');
+    }
+    function switchTab(name) {
+      tabs.forEach(t => t.classList.toggle('active', t.dataset.tab === name));
+      loginForm.style.display = name === 'login' ? 'block' : 'none';
+      registerForm.style.display = name === 'register' ? 'block' : 'none';
+      showMsg('');
+    }
+    tabs.forEach(t => t.addEventListener('click', () => switchTab(t.dataset.tab)));
+    document.querySelectorAll('[data-switch]').forEach(a => a.addEventListener('click', () => switchTab(a.dataset.switch)));
+
+    // 已登录则直接进入游戏
+    if (getToken() && getUser()) { window.location.href = '/game.html'; }
+
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginName').value.trim();
+      const password = document.getElementById('loginPass').value;
+      if (!username || !password) return showMsg('请输入用户名和密码', 'error');
+      try {
+        const data = await api('/login', { method: 'POST', body: JSON.stringify({ username, password }) });
+        setToken(data.token); setUser(data.user);
+        showMsg('登录成功，正在进入游戏…', 'ok');
+        setTimeout(() => window.location.href = '/game.html', 500);
+      } catch (err) { showMsg(err.message, 'error'); }
+    });
+
+    registerForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('regName').value.trim();
+      const password = document.getElementById('regPass').value;
+      const password2 = document.getElementById('regPass2').value;
+      if (!username || !password) return showMsg('请输入用户名和密码', 'error');
+      if (password !== password2) return showMsg('两次输入的密码不一致', 'error');
+      try {
+        const data = await api('/register', { method: 'POST', body: JSON.stringify({ username, password }) });
+        setToken(data.token); setUser(data.user);
+        showMsg('注册成功，正在进入游戏…', 'ok');
+        setTimeout(() => window.location.href = '/game.html', 500);
+      } catch (err) { showMsg(err.message, 'error'); }
+    });
+
+    switchTab('login');
+  </script>
+</body>
+</html>

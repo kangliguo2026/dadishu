@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>打地鼠 - 游戏</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐹</text></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body class="game-page">
+  <div class="bg-blob blob-1"></div>
+  <div class="bg-blob blob-2"></div>
+  <div class="bg-blob blob-3"></div>
+
+  <!-- 顶部栏 -->
+  <header class="g-top">
+    <div class="g-brand">
+      <svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="34" cy="46" r="13" fill="#8a5a35"/>
+        <circle cx="86" cy="46" r="13" fill="#8a5a35"/>
+        <circle cx="34" cy="46" r="6.5" fill="#f0b8a0"/>
+        <circle cx="86" cy="46" r="6.5" fill="#f0b8a0"/>
+        <path d="M20 120 Q18 78 38 62 Q48 30 60 30 Q72 30 82 62 Q102 78 100 120 Z" fill="#a06a44"/>
+        <ellipse cx="60" cy="104" rx="34" ry="20" fill="#d9a06b"/>
+        <ellipse cx="46" cy="56" rx="7" ry="8.5" fill="#2d1b0e"/>
+        <ellipse cx="74" cy="56" rx="7" ry="8.5" fill="#2d1b0e"/>
+        <circle cx="48" cy="52" r="2.6" fill="#fff"/>
+        <circle cx="76" cy="52" r="2.6" fill="#fff"/>
+        <ellipse cx="60" cy="68" rx="8.5" ry="6" fill="#f28c8c"/>
+        <rect x="54" y="74" width="5.5" height="6.5" rx="1.2" fill="#fff" stroke="#d9d9d9" stroke-width="0.8"/>
+        <rect x="60.5" y="74" width="5.5" height="6.5" rx="1.2" fill="#fff" stroke="#d9d9d9" stroke-width="0.8"/>
+        <path d="M30 66 L10 60 M30 72 L8 72" stroke="#7a5a3a" stroke-width="2" stroke-linecap="round" fill="none"/>
+        <path d="M90 66 L110 60 M90 72 L112 72" stroke="#7a5a3a" stroke-width="2" stroke-linecap="round" fill="none"/>
+      </svg>
+      <span>打地鼠</span>
+    </div>
+    <div class="g-user">
+      <div class="g-avatar" id="avatar">?</div>
+      <span class="g-uname" id="uname"></span>
+      <button class="btn btn-ghost btn-sm" id="btnLogout">退出</button>
+    </div>
+  </header>
+
+  <main class="g-main">
+    <!-- 游戏区 -->
+    <section class="game-area">
+      <div class="g-stats">
+        <div class="stat"><div class="k">得分</div><div class="v blue" id="score">0</div></div>
+        <div class="stat"><div class="k">剩余时间</div><div class="v amber" id="time">60</div></div>
+        <div class="stat"><div class="k">历史最高</div><div class="v green" id="best">0</div></div>
+      </div>
+
+      <div class="board" id="board"></div>
+
+      <div class="g-controls">
+        <select class="select" id="difficulty">
+          <option value="简单">😊 简单</option>
+          <option value="中等" selected>🙂 中等</option>
+          <option value="困难">😈 困难</option>
+        </select>
+        <button class="btn btn-primary" id="btnStart">▶ 开始游戏</button>
+        <button class="btn btn-ghost" id="btnPause" disabled>⏸ 暂停</button>
+      </div>
+      <p class="g-tip">💡 点击钻出洞口的地鼠得 1 分，地鼠缩回去就来不及啦！每局 60 秒，难度越高地鼠动作越快、同时出现的越多。</p>
+    </section>
+
+    <!-- 侧栏 -->
+    <aside class="side">
+      <div class="panel">
+        <h3><span class="dot"></span>🏆 排行榜 Top10</h3>
+        <ul class="lb-list" id="lbList"><li class="empty-tip">加载中…</li></ul>
+      </div>
+      <div class="panel">
+        <h3><span class="dot"></span>📋 我的战绩</h3>
+        <ul class="my-list" id="myList"><li class="empty-tip">还没有成绩，快去打一局吧！</li></ul>
+      </div>
+    </aside>
+  </main>
+
+  <!-- 结算弹窗 -->
+  <div class="modal-mask" id="endMask">
+    <div class="modal">
+      <span class="medal" id="medal">🎉</span>
+      <h2 id="endTitle">游戏结束！</h2>
+      <p class="sub" id="endSub"></p>
+      <div class="big-score"><span id="finalScore">0</span><span class="u"> 分</span></div>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="btn btn-primary" id="btnAgain">🔄 再来一局</button>
+        <button class="btn btn-ghost" id="btnClose">关闭</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script src="/js/game.js"></script>
+</body>
+</html>

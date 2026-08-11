@@ -1,0 +1,23 @@
+{
+  "name": "dadishu",
+  "version": "1.0.0",
+  "description": "打地鼠游戏 - 带注册登录功能的 Web 小游戏（Express + SQLite + JWT）",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "whack-a-mole",
+    "game",
+    "express",
+    "sqlite"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^11.10.0",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2"
+  }
+}
